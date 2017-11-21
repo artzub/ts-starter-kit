@@ -10,6 +10,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const autoprefixer = require('autoprefixer');
 const postcssUrl = require('postcss-url');
 const cssnano = require('cssnano');
+const CleanPlugin = require('clean-webpack-plugin');
 
 const {NoEmitOnErrorsPlugin, EnvironmentPlugin, HashedModuleIdsPlugin, SourceMapDevToolPlugin, NamedModulesPlugin} = require('webpack');
 const {CommonsChunkPlugin, ModuleConcatenationPlugin, UglifyJsPlugin} = require('webpack').optimize;
@@ -374,8 +375,9 @@ if (!productionMode) {
 
 
     plugins.push(
+        new CleanPlugin(['dist']),
         new ExtractTextPlugin({
-            "filename": "[name].[contenthash:20].bundle.css"
+            "filename": "[name].bundle.css" // .[contenthash:20]
         }),
         new LicenseWebpackPlugin({
             "licenseFilenames": [
@@ -456,8 +458,8 @@ module.exports = {
     },
     "output": {
         "path": path.join(process.cwd(), "dist"),
-        "filename": productionMode ? "[name].[chunkhash:20].bundle.js" : "[name].bundle.js",
-        "chunkFilename": productionMode ? "[id].[chunkhash:20].chunk.js" : "[id].chunk.js"
+        "filename": !productionMode ? "[name].[chunkhash:20].bundle.js" : "[name].bundle.js",
+        "chunkFilename": !productionMode ? "[id].[chunkhash:20].chunk.js" : "[id].chunk.js"
     },
     "module": {
         "rules": [
